@@ -4,6 +4,9 @@ import javax.persistence.Entity;
 import javax.persistence.*;
 import javax.persistence.Table;
 import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -16,6 +19,26 @@ public class Singer {
         private String lastName;
         private Date birthDate;
         private int version;
+        private Set<Album> albums = new HashSet<>();
+
+
+        @OneToMany(mappedBy = "singer", cascade=CascadeType.ALL,
+                orphanRemoval=true)
+        public Set<Album> getAlbums() {
+            return albums;
+        }
+        public boolean addAbum(Album album) {
+            album.setSinger(this);
+            return getAlbums().add(album);
+        }
+        public void removeAlbum(Album album) {
+            getAlbums().remove(album);
+        }
+        public void setAlbums(Set<Album> albums) {
+            this.albums = albums;
+        }
+
+
         public void setId(Long id) {
             this.id = id;
         }

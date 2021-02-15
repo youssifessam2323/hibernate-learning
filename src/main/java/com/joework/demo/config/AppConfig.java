@@ -10,7 +10,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabase;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
 import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
@@ -37,8 +39,8 @@ public class AppConfig {
                    .build();
        }catch (Exception e){
            logger.error("Embedded DataSource bean cannot be created!", e);
+           return null ;
        }
-       return null ;
     }
 
 
@@ -66,5 +68,9 @@ public class AppConfig {
         sessionFactoryBean.afterPropertiesSet();
 
         return sessionFactoryBean.getObject();
+    }
+
+    @Bean public PlatformTransactionManager transactionManager() throws IOException{
+        return new HibernateTransactionManager(sessionFactory());
     }
 }
